@@ -1,10 +1,16 @@
 package wrkmng.app.reservation;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -19,35 +25,35 @@ public class ReservationsController {
 //	@Autowired
 //	ReservationService reservationService;
 
-//	@ModelAttribute
-//	ReservationForm setUpForm() {
-//		ReservationForm form = new ReservationForm();
-//		// デフォルト値
-//		form.setStartTime(LocalTime.of(9, 0));
-//		form.setEndTime(LocalTime.of(10, 0));
-//		return form;
-//	}
+	@ModelAttribute
+	ReservationForm setUpForm() {
+		ReservationForm form = new ReservationForm();
+		// デフォルト値
+		form.setStartTime(LocalTime.of(9, 0));
+		form.setEndTime(LocalTime.of(10, 0));
+		return form;
+	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	String reserveForm(Model model) {
-//		ReservableRoomId reservableRoomId = new ReservableRoomId(roomId, date);
 //		List<Reservation> reservations = reservationService.findReservations(reservableRoomId);
-//
-//		List<LocalTime> timeList = Stream.iterate(LocalTime.of(0, 0), t -> t.plusMinutes(30)).limit(24 * 2).collect(Collectors.toList());
+
+		List<LocalDate> dateList = Stream.iterate(LocalDate.now(), d -> d.plusDays(1)).limit(30).collect(Collectors.toList());
+		List<LocalTime> timeList = Stream.iterate(LocalTime.of(0, 0), t -> t.plusMinutes(30)).limit(24 * 2).collect(Collectors.toList());
 		List<MeetingRoom> meetingRooms = roomService.findMeetingRoom();
 
+		model.addAttribute("dateList", dateList);
 		model.addAttribute("rooms", meetingRooms);
-//		model.addAttribute("reservations", reservations);
-//		model.addAttribute("timeList", timeList);
+		model.addAttribute("timeList", timeList);
 		return "reservation/reserveForm";
 	}
 
-//	@RequestMapping(method = RequestMethod.POST)
-//	String reserve(@Validated ReservationForm form,
+	@RequestMapping(method = RequestMethod.POST)
+	String reserve(@Validated ReservationForm form,
 //			BindingResult bindingResult,
 //			@AuthenticationPrincipal ReservationUserDetails userDetails,
 //			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @PathVariable("date") LocalDate date,
-//			@PathVariable("roomId") Integer roomId, Model model) {
+			Model model) {
 //		if(bindingResult.hasErrors()) {
 //			return reserveForm(date, roomId, model);
 //		}
@@ -66,8 +72,8 @@ public class ReservationsController {
 //			model.addAttribute("error", e.getMessage());
 //			return reserveForm(date, roomId, model);
 //		}
-//		return "redirect:/reservations/{date}/{roomId}";
-//	}
+		return "redirect:/reservations";
+	}
 //
 //	@RequestMapping(method = RequestMethod.POST, params = "cancel")
 //	String cancel(@RequestParam("reservationId") Integer reservationId,

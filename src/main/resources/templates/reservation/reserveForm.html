@@ -9,31 +9,32 @@
 	<h2>会議室予約</h2>
 	<p style="color: red" th:if="${error != null}" th:text="${error}"></p>
 
+	<form th:object="${reservationForm}" th:action="@{'/reservations/'}" method="post">
+		日付：
+<!-- 		<span th:text="${#temporals.format(date, 'yyyy/M/d')}"></span> -->
+		<select>
+			<option th:each="date : ${dateList}" th:text="${date}" th:value="${date}"></option>
+		</select>
+		<br/>
+		時間帯：
+		<select th:field="*{startTime}">
+			<option th:each="time : ${timeList}" th:text="${time}" th:value="${time}"></option>
+		</select>
+		<span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" style="color:red"></span>
+		-
+		<select th:field="*{endTime}">
+			<option th:each="time : ${timeList}" th:text="${time}" th:value="${time}"></option>
+		</select>
+		<span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" style="color:red"></span>
+		<br/>
 		会議室：
 		<select>
 			<option th:each="room : ${rooms}" th:text="${room.roomName}" th:value="${room.roomName}"></option>
 		</select>
 
-<!-- 	<form th:object="${reservationForm}" th:action="@{'/reservations/' + ${date} + '/' + ${roomId}}" method="post"> -->
-<!-- 		会議室：<span th:text="${room.roomName}"></span> -->
-<!-- 		<br/> -->
-<!-- 		予約者名：<span th:text="${user.lastName + ' ' + user.firstName}"></span> -->
-<!-- 		<br/> -->
-<!-- 		日付：<span th:text="${#temporals.format(date, 'yyyy/M/d')}"></span> -->
-<!-- 		<br/> -->
-<!-- 		時間帯： -->
-<!-- 		<select th:field="*{startTime}"> -->
-<!-- 			<option th:each="time : ${timeList}" th:text="${time}" th:value="${time}"></option> -->
-<!-- 		</select> -->
-<!-- 		<span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" style="color:red"></span> -->
-<!-- 		- -->
-<!-- 		<select th:field="*{endTime}"> -->
-<!-- 			<option th:each="time : ${timeList}" th:text="${time}" th:value="${time}"></option> -->
-<!-- 		</select> -->
-<!-- 		<span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" style="color:red"></span> -->
-<!-- 		<br/> -->
-<!-- 		<button>予約</button> -->
-<!-- 	</form> -->
+		<br/>
+		<button>予約</button>
+	</form>
 
 	<table>
 		<tr>
