@@ -1,7 +1,9 @@
 package wrkmng.domain.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +21,8 @@ public class Reservation implements Serializable {
 	private LocalTime startTime;
 
 	private LocalTime endTime;
+
+	private LocalDate reservedDate;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -52,6 +56,14 @@ public class Reservation implements Serializable {
 		this.endTime = endTime;
 	}
 
+	public LocalDate getReservedDate() {
+		return reservedDate;
+	}
+
+	public void setReservedDate(LocalDate reservedDate) {
+		this.reservedDate = reservedDate;
+	}
+
 	public User getUser() {
 		return user;
 	}
@@ -68,4 +80,18 @@ public class Reservation implements Serializable {
 		this.meetingRoom = meetingRoom;
 	}
 
+	// 予約時間の重複チェック
+	public boolean overlap(Reservation target) {
+		// 部屋idと予約日付が一致しなければ重複していない
+		if(!(Objects.equals(meetingRoom.getRoomId(), target.getMeetingRoom().getRoomId()) &&
+				Objects.equals(reservedDate, target.getReservedDate()))){
+			return false;
+		}
+		// 開始時刻と終了時刻が一致する場合は重複している
+		if(startTime.equals(target.startTime) && endTime.equals(target.endTime)) {
+			return true;
+		}
+		// 予約時間帯が交差または包含関係にあれば重複している
+		return target.endTime.isAfter(startTime) && endTime.isAfter(target.startTime);
+	}
 }

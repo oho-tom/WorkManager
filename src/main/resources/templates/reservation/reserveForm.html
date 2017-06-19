@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>会議室予約</title>
+	<link href="/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"></link>
 </head>
 <body th:with="user=${#authentication.principal.user}">
 	<h2>会議室予約</h2>
@@ -11,10 +12,10 @@
 
 	<form th:object="${reservationForm}" th:action="@{'/reservations/'}" method="post">
 		日付：
-<!-- 		<span th:text="${#temporals.format(date, 'yyyy/M/d')}"></span> -->
-		<select>
+		<select th:field="*{reservedDate}">
 			<option th:each="date : ${dateList}" th:text="${date}" th:value="${date}"></option>
 		</select>
+		<span th:if="${#fields.hasErrors('reservedDate')}" th:errors="*{reservedDate}" style="color:red"></span>
 		<br/>
 		時間帯：
 		<select th:field="*{startTime}">
@@ -28,30 +29,41 @@
 		<span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" style="color:red"></span>
 		<br/>
 		会議室：
-		<select>
-			<option th:each="room : ${rooms}" th:text="${room.roomName}" th:value="${room.roomName}"></option>
+		<select th:field="*{roomId}">
+			<option th:each="room : ${rooms}" th:text="${room.roomName}" th:value="${room.roomId}"></option>
 		</select>
 
 		<br/>
 		<button>予約</button>
 	</form>
+	<br/>
 
 	<table>
 		<tr>
-			<th>時間帯</th>
+			<th>日付</th>
+			<th>開始時間</th>
+			<th>終了時間</th>
+			<th>会議室</th>
 			<th>予約者</th>
 			<th>操作</th>
 		</tr>
-<!-- 		<tr th:each="reservation : ${reservations}"> -->
-<!-- 			<td> -->
-<!-- 				<span th:text="${reservation.startTime}"></span> -->
-<!-- 				- -->
-<!-- 				<span th:text="${reservation.endTime}"></span> -->
-<!-- 			</td> -->
-<!-- 			<td> -->
-<!-- 				<span th:text="${reservation.user.lastName}"></span> -->
-<!-- 				<span th:text="${reservation.user.firstName}"></span> -->
-<!-- 			</td> -->
+		<tr th:each="reservation : ${reservations}">
+			<td>
+				<span th:text="${reservation.reservedDate}"></span>
+			</td>
+			<td>
+				<span th:text="${reservation.startTime}"></span>
+			</td>
+			<td>
+				<span th:text="${reservation.endTime}"></span>
+			</td>
+			<td>
+				<span th:text="${reservation.meetingRoom.roomName}"></span>
+			</td>
+			<td>
+				<span th:text="${reservation.user.lastName}"></span>
+				<span th:text="${reservation.user.firstName}"></span>
+			</td>
 <!-- 			<td> -->
 <!-- 				<form th:action="@{'/reservations/' + ${date} + '/' + ${roomId}}" method="post" -->
 <!-- 					sec:authorize="${hasRole('ADMIN') or #vars.user.userId == #vars.reservation.user.userId}"> -->
@@ -59,7 +71,7 @@
 <!-- 					<input type="submit" name="cancel" value="取消"/> -->
 <!-- 				</form> -->
 <!-- 			</td> -->
-<!-- 		</tr> -->
+		</tr>
 	</table>
 </body>
 </html>
