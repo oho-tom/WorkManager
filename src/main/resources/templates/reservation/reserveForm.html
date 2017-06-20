@@ -8,7 +8,6 @@
 </head>
 <body th:with="user=${#authentication.principal.user}">
 	<h2>会議室予約</h2>
-	<p style="color: red" th:if="${error != null}" th:text="${error}"></p>
 
 	<form th:object="${reservationForm}" th:action="@{'/reservations/'}" method="post">
 		日付：
@@ -36,8 +35,10 @@
 		<br/>
 		<button>予約</button>
 	</form>
+	<p style="color: red" th:if="${error != null}" th:text="${error}"></p>
 	<br/>
 
+	<h3>予約一覧</h3>
 	<table>
 		<tr>
 			<th>日付</th>
@@ -64,13 +65,13 @@
 				<span th:text="${reservation.user.lastName}"></span>
 				<span th:text="${reservation.user.firstName}"></span>
 			</td>
-<!-- 			<td> -->
-<!-- 				<form th:action="@{'/reservations/' + ${date} + '/' + ${roomId}}" method="post" -->
-<!-- 					sec:authorize="${hasRole('ADMIN') or #vars.user.userId == #vars.reservation.user.userId}"> -->
-<!-- 					<input type="hidden" name="reservationId" th:value="${reservation.reservationId}"/> -->
-<!-- 					<input type="submit" name="cancel" value="取消"/> -->
-<!-- 				</form> -->
-<!-- 			</td> -->
+			<td>
+				<form th:action="@{'/reservations/'}" method="post"
+					sec:authorize="${hasRole('ADMIN') or #vars.user.userId == #vars.reservation.user.userId}">
+					<input type="hidden" name="reservationId" th:value="${reservation.reservationId}"/>
+					<input type="submit" name="cancel" value="取消"/>
+				</form>
+			</td>
 		</tr>
 	</table>
 </body>

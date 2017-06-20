@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import wrkmng.domain.model.MeetingRoom;
 import wrkmng.domain.model.Reservation;
@@ -46,7 +48,8 @@ public class ReservationsController {
 		List<LocalDate> dateList = Stream.iterate(LocalDate.now(), d -> d.plusDays(1)).limit(30).collect(Collectors.toList());
 		List<LocalTime> timeList = Stream.iterate(LocalTime.of(0, 0), t -> t.plusMinutes(30)).limit(24 * 2).collect(Collectors.toList());
 		List<MeetingRoom> meetingRooms = roomService.findMeetingRoom();
-		List<Reservation> reservations = reservationService.findAll();
+		LocalDate today = LocalDate.now();
+		List<Reservation> reservations = reservationService.findByReservedDateAfterOrderByReservedDate(today.minusDays(1));
 
 		model.addAttribute("dateList", dateList);
 		model.addAttribute("rooms", meetingRooms);
@@ -81,21 +84,19 @@ public class ReservationsController {
 		}
 		return "redirect:/reservations";
 	}
-//
-//	@RequestMapping(method = RequestMethod.POST, params = "cancel")
-//	String cancel(@RequestParam("reservationId") Integer reservationId,
-//			@PathVariable("roomId") Integer roomId,
-//			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @PathVariable("date") LocalDate date,
-//			Model model) {
-//
-//		try {
-//			Reservation reservation = reservationService.findOne(reservationId);
-//			reservationService.cancel(reservation);
-//		}
-//		catch (AccessDeniedException e){
-//			model.addAttribute("error", e.getMessage());
-//			return reserveForm(date, roomId, model);
-//		}
-//		return "redirect:/reservations/{date}/{roomId}";
-//	}
+
+	@RequestMapping(method = RequestMethod.POST, params = "cancel")
+	String cancel(@RequestParam("reservationId") Integer reservationId,
+			Model model) {
+
+		try {
+			Reservation reservation = reservationService.findOne(reservationId);
+			reservationService.cancel(reservation);
+		}
+		catch (AccessDeniedException e){
+			model.addAttribute("error", e.getMessage());
+			return reserveForm(model);
+		}
+		return "redirect:/reservations";
+	}
 }

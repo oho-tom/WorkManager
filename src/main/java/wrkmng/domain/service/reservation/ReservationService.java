@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,13 +41,17 @@ public class ReservationService {
 		return reservationRepository.findAll();
 	}
 
-//	// 予約キャンセル処理
-//	@PreAuthorize("hasRole('ADMIN') or principal.user.userId == #reservation.user.userId")
-//	public void cancel(@P("reservation") Reservation reservation) {
-//		reservationRepository.delete(reservation);
-//	}
-//
-//	public Reservation findOne(Integer reservationId) {
-//		return reservationRepository.findOne(reservationId);
-//	}
+	public List<Reservation> findByReservedDateAfterOrderByReservedDate(LocalDate reservedDate) {
+		return reservationRepository.findByReservedDateAfterOrderByReservedDate(reservedDate);
+	}
+
+	// 予約キャンセル処理
+	@PreAuthorize("hasRole('ADMIN') or principal.user.userId == #reservation.user.userId")
+	public void cancel(@P("reservation") Reservation reservation) {
+		reservationRepository.delete(reservation);
+	}
+
+	public Reservation findOne(Integer reservationId) {
+		return reservationRepository.findOne(reservationId);
+	}
 }
