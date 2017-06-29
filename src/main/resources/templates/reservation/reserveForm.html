@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>会議室予約</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 	<link href="/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"></link>
 </head>
 <body th:with="user=${#authentication.principal.user}">
@@ -35,44 +36,52 @@
 		<br/>
 		<button>予約</button>
 	</form>
+	<p style="color: blue" th:if="${success != null}" th:text="${success}"></p>
 	<p style="color: red" th:if="${error != null}" th:text="${error}"></p>
+	<p style="color: blue" th:if="${cancel != null}" th:text="${cancel}"></p>
 	<br/>
 
 	<h3>予約一覧</h3>
 	<table>
-		<tr>
-			<th>日付</th>
-			<th>開始時間</th>
-			<th>終了時間</th>
-			<th>会議室</th>
-			<th>予約者</th>
-			<th>操作</th>
-		</tr>
-		<tr th:each="reservation : ${reservations}">
-			<td>
-				<span th:text="${reservation.reservedDate}"></span>
-			</td>
-			<td>
-				<span th:text="${reservation.startTime}"></span>
-			</td>
-			<td>
-				<span th:text="${reservation.endTime}"></span>
-			</td>
-			<td>
-				<span th:text="${reservation.meetingRoom.roomName}"></span>
-			</td>
-			<td>
-				<span th:text="${reservation.user.lastName}"></span>
-				<span th:text="${reservation.user.firstName}"></span>
-			</td>
-			<td>
-				<form th:action="@{'/reservations/'}" method="post"
-					sec:authorize="${hasRole('ADMIN') or #vars.user.userId == #vars.reservation.user.userId}">
-					<input type="hidden" name="reservationId" th:value="${reservation.reservationId}"/>
-					<input type="submit" name="cancel" value="取消"/>
-				</form>
-			</td>
-		</tr>
+		<thead>
+			<tr>
+				<th data-type="string">日付</th>
+				<th data-type="string">開始時間</th>
+				<th data-type="string">終了時間</th>
+				<th data-type="string">会議室</th>
+				<th data-type="string">予約者</th>
+				<th data-type="string">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="reservation : ${reservations}">
+				<td>
+					<span th:text="${reservation.reservedDate}"></span>
+				</td>
+				<td>
+					<span th:text="${reservation.startTime}"></span>
+				</td>
+				<td>
+					<span th:text="${reservation.endTime}"></span>
+				</td>
+				<td>
+					<span th:text="${reservation.meetingRoom.roomName}"></span>
+				</td>
+				<td>
+					<span th:text="${reservation.user.lastName}"></span>
+					<span th:text="${reservation.user.firstName}"></span>
+				</td>
+				<td>
+					<form th:action="@{'/reservations/'}" method="post"
+						sec:authorize="${hasRole('ADMIN') or #vars.user.userId == #vars.reservation.user.userId}" onsubmit="return confirmCancel();">
+						<input type="hidden" name="reservationId" th:value="${reservation.reservationId}"/>
+						<input type="submit" name="cancel" value="取消"/>
+					</form>
+				</td>
+			</tr>
+		</tbody>
 	</table>
+	<script src="/js/table_sort.js"></script>
+	<script src="/js/confirm.js"></script>
 </body>
 </html>

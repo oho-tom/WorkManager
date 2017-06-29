@@ -77,12 +77,12 @@ public class ReservationsController {
 
 		try {
 			reservationService.reserve(reservation);
+			model.addAttribute("success", "予約を登録しました。");
 		}
 		catch (AlreadyReservedException e) {
 			model.addAttribute("error", e.getMessage());
-			return reserveForm(model);
 		}
-		return "redirect:/reservations";
+		return reserveForm(model);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, params = "cancel")
@@ -92,11 +92,12 @@ public class ReservationsController {
 		try {
 			Reservation reservation = reservationService.findOne(reservationId);
 			reservationService.cancel(reservation);
+			model.addAttribute("cancel", "予約を取り消しました。");
+
 		}
 		catch (AccessDeniedException e){
 			model.addAttribute("error", e.getMessage());
-			return reserveForm(model);
 		}
-		return "redirect:/reservations";
+		return reserveForm(model);
 	}
 }

@@ -8,3 +8,31 @@ th, td {
 	border: 1px solid #ccc;
 	padding: 5px;
 }
+
+th {
+	cursor: pointer;
+}
+
+th:after {
+    content: '\f0dc';
+    font-family: FontAwesome;
+    font-size: 12px;
+    float: right;
+    padding: 4px;
+    color: #eee;
+    font-weight: normal;
+}
+th.asc:after {
+    content: '\f0de';
+    font-family: FontAwesome;
+    color: #000;
+}
+th.desc:after {
+    content: '\f0dd';
+    font-family: FontAwesome;
+    color: #000;
+}
+
+tbody tr:nth-child(odd) {
+    background: #f8f8f8;
+}
