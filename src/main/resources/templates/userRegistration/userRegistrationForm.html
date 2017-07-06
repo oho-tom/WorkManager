@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>User Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+	<link href="/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"></link>
+</head>
+<body>
+	<h2>ユーザー登録</h2>
+
+	<form th:object="${userRegistrationForm}" th:action="@{'/userRegistration/'}" method="post">
+		ユーザーID：
+		<input type="text" th:field="*{userId}"></input>
+		<br/>
+		性：
+		<input type="text" th:field="*{lastName}"/>
+		<br/>
+		名：
+		<input type="text" th:field="*{firstName}"/>
+		<br/>
+		権限：
+		<select th:field="*{roleId}">
+			<option th:each="role : ${roles}" th:text="${role.roleName}" th:value="${role.roleId}"></option>
+		</select>
+		<br/>
+		パスワード：
+		<input type="password" th:field="*{password}"/>
+		<br/>
+		パスワード(確認用)：
+		<input type="password"/>
+		<br/>
+		<button>登録</button>
+	</form>
+	<br/>
+
+	<p style="color: blue" th:if="${success != null}" th:text="${success}"></p>
+	<p style="color: red" th:if="${error != null}" th:text="${error}"></p>
+
+	<h3>ユーザー一覧</h3>
+	<table>
+		<thead>
+			<tr>
+				<th data-type="string">ユーザーID</th>
+				<th data-type="string">性</th>
+				<th data-type="string">名</th>
+				<th data-type="string">権限</th>
+				<th data-type="string">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="user : ${users}">
+				<td>
+					<span th:text="${user.userId}"></span>
+				</td>
+				<td>
+					<span th:text="${user.lastName}"></span>
+				</td>
+				<td>
+					<span th:text="${user.firstName}"></span>
+				</td>
+				<td>
+					<span th:text="${user.roleId}"></span>
+				</td>
+				<td>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<script src="/js/table_sort.js"></script>
+	<script src="/js/confirm.js"></script>
+</body>
+</html>

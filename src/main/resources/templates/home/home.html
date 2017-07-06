@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8"/>
 	<title>Home</title>
@@ -16,6 +17,7 @@
 		<h2>メニュー</h2>
 		<ul>
 			<li><a th:href="@{/reservations}">会議室予約</a></li>
+			<li th:if="${role.userRegist}"><a th:href="@{/userRegistration}">ユーザー登録</a></li>
 		</ul>
 	</div>
 </body>

@@ -36,3 +36,8 @@ th.desc:after {
 tbody tr:nth-child(odd) {
     background: #f8f8f8;
 }
+
+input, select, button {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}

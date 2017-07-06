@@ -3,8 +3,6 @@ package wrkmng.domain.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -21,8 +19,7 @@ public class User implements Serializable {
 
 	private String lastName;
 
-	@Enumerated(EnumType.STRING)
-	private RoleName roleName;
+	private String roleId;
 
 	public String getUserId() {
 		return userId;
@@ -56,14 +53,12 @@ public class User implements Serializable {
 		this.lastName = lastName;
 	}
 
-	public RoleName getRoleName() {
-		return roleName;
+	public String getRoleId() {
+		return roleId;
 	}
 
-	public void setRoleName(RoleName roleName) {
-		this.roleName = roleName;
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
-
-
 
 }
